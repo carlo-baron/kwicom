@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { connectDB } from '@/lib/mongoose';
 import { User } from '@/models/User';
+import { compare } from '@/lib/hash';
 
 export async function GET(){
     try{
@@ -18,19 +19,26 @@ export async function POST(req: Request){
 
         const { username, password } = await req.json();
         const user = await User.findOne({
-            username,
-            password
+            username
         });
 
         if(user){
-            return NextResponse.json({
-                ok: true,
-                message: "Logged in successfully",
-            });
+            const isValid = await compare(password, user.password);
+            if(isValid){
+                return NextResponse.json({
+                    ok: true,
+                    message: "Logged in successfully",
+                });
+            }else{
+                return NextResponse.json({
+                    ok: false,
+                    message: "Incorrect Credentials",
+                });
+            }
         }else{
             return NextResponse.json({
                 ok: false,
-                message: "Incorrect Credentials",
+                message: "User not Found",
             });
         }
     }catch(err){
