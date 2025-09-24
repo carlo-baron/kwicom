@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 export default function Home() {
     const [loggedIn, setLoggedIn] = useState<boolean>(false);
@@ -16,14 +16,19 @@ export default function Home() {
         formDataObject[key] = value;
     });
 
-    fetch('api/users', {
+    fetch('/api/login', {
         method: 'POST',
         headers: {'Content-Type': 'application/json' },
         body: JSON.stringify(formDataObject)
     })
     .then(res => res.json())
     .then(data => {
-        setLoggedIn(data.ok);
+        if(data.ok){
+            setLoggedIn(true);
+            fetch('/api/users')
+            .then(res=>res.json())
+            .then(data=>console.log(data));
+        }
     })
     .catch(err => console.log(err));
   }
@@ -38,7 +43,7 @@ export default function Home() {
         formDataObject[key] = value;
     });
 
-    fetch('api/register', {
+    fetch('/api/register', {
         method: 'POST',
         headers: {'Content-Type': 'application/json' },
         body: JSON.stringify(formDataObject)
@@ -119,6 +124,7 @@ function Form(
         <form 
         onSubmit={onSubmit}
         onClick={(e)=>e.stopPropagation()}
+        method="post"
         className="flex flex-col items-center justify-center w-[50%] h-[50%] outline-solid"
         >
             <label htmlFor="username">Username: </label>

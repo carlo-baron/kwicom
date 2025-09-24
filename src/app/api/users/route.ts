@@ -1,47 +1,33 @@
 import { NextResponse } from 'next/server';
+import { cookies } from 'next/headers';
 import { connectDB } from '@/lib/mongoose';
 import { User } from '@/models/User';
-import { compare } from '@/lib/hash';
+import jwt from 'jsonwebtoken';
+
+const SECRET = process.env.JWT_SECRET || "supersecretkey";
 
 export async function GET(){
-    try{
-        await connectDB();
-        const users = await User.find({});
-        return NextResponse.json(users);
-    }catch(err){
-        return NextResponse.json({ok: false, error: err});
-    }
-}
+    await connectDB();
 
-export async function POST(req: Request){
-    try{
-        await connectDB();
+    const cookieStore = cookies();
+    const token = cookieStore.get('token')?.value;
 
-        const { username, password } = await req.json();
-        const user = await User.findOne({
-            username
+    if(!token){
+        return NextResponse.json({
+            ok: false,
+            message: "No token"
         });
+    }
 
-        if(user){
-            const isValid = await compare(password, user.password);
-            if(isValid){
-                return NextResponse.json({
-                    ok: true,
-                    message: "Logged in successfully",
-                });
-            }else{
-                return NextResponse.json({
-                    ok: false,
-                    message: "Incorrect Credentials",
-                });
-            }
-        }else{
-            return NextResponse.json({
-                ok: false,
-                message: "User not Found",
-            });
-        }
-    }catch(err){
-        return NextResponse.json({ok: false, error: err});
+    try{
+        const decoded = jwt.verify(token, SECRET);
+
+        const users = await User.find().select("-password");
+        return NextResponse.json({
+            ok: true,
+            users
+        });
+    }catch{
+        return NextResponse.json({ ok: false, message: "Invalid token" });
     }
 }

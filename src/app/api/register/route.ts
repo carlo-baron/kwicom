@@ -22,11 +22,11 @@ export async function POST(req: Request){
         }catch(err){
             return NextResponse.json({
                 ok: false,
-                message: "Failed to register user: " + err
+                message: "Failed to register user: "
             }); 
         }
 
     }catch(err){
-        return NextResponse.json({ok: false, error: err});
+        return NextResponse.json({ok: false, message: "Internal server error"});
     }
 }
