@@ -4,7 +4,7 @@ import { connectDB } from '@/lib/mongoose';
 import { User } from '@/models/User';
 import jwt from 'jsonwebtoken';
 
-const SECRET = process.env.JWT_SECRET || "supersecretkey";
+const SECRET = process.env.JWT_SECRET;
 
 export async function GET(){
     await connectDB();

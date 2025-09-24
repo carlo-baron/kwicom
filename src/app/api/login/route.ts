@@ -4,7 +4,7 @@ import { User } from '@/models/User';
 import { compare } from '@/lib/hash';
 import jwt from 'jsonwebtoken';
 
-const SECRET = process.env.JWT_SECRET || "supersecretkey";
+const SECRET = process.env.JWT_SECRET;
 
 export async function POST(req: Request){
     try{
@@ -31,8 +31,8 @@ export async function POST(req: Request){
 
                 res.cookies.set('token', token, {
                     httpOnly: true,
-                    secure: false, //process.env.NODE_ENV === "production"
-                    sameSite: 'lax',
+                    secure: process.env.NODE_ENV === "production",
+                    sameSite: 'strict',
                     maxAge: 60 * 60,
                     path: '/',
                 });
