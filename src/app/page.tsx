@@ -6,12 +6,12 @@ export default function Home() {
     const [loggedIn, setLoggedIn] = useState<boolean>(false);
     const [register, setRegister] = useState<boolean>(false);
 
-  function handleSubmit(e){
+  function handleSubmit(e: React.FormEvent<HTMLFormElement>){
     e.preventDefault();
-    const form = e.target;
+    const form = e.currentTarget;
     const formData = new FormData(form);
 
-    const formDataObject = {};
+    const formDataObject: {[key: string]: FormDataEntryValue } = {};
     formData.forEach((value, key) => {
         formDataObject[key] = value;
     });
@@ -33,12 +33,12 @@ export default function Home() {
     .catch(err => console.log(err));
   }
 
-  function handleRegister(e){
+  function handleRegister(e: React.FormEvent<HTMLFormElement>){
     e.preventDefault();
-    const form = e.target;
+    const form = e.currentTarget;
     const formData = new FormData(form);
 
-    const formDataObject = {};
+    const formDataObject: {[key: string]: FormDataEntryValue } = {};
     formData.forEach((value, key) => {
         formDataObject[key] = value;
     });

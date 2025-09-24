@@ -19,14 +19,14 @@ export async function POST(req: Request){
                 ok: true,
                 message: "User registered successfully"
             });
-        }catch(err){
+        }catch{
             return NextResponse.json({
                 ok: false,
                 message: "Failed to register user: "
             }); 
         }
 
-    }catch(err){
+    }catch{
         return NextResponse.json({ok: false, message: "Internal server error"});
     }
 }

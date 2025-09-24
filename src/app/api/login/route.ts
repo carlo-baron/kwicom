@@ -4,7 +4,9 @@ import { User } from '@/models/User';
 import { compare } from '@/lib/hash';
 import jwt from 'jsonwebtoken';
 
-const SECRET = process.env.JWT_SECRET;
+const SECRET = process.env.JWT_SECRET as string;
+
+if(!SECRET) throw new Error("SECRET not set");
 
 export async function POST(req: Request){
     try{
@@ -50,7 +52,7 @@ export async function POST(req: Request){
                 message: "User not Found",
             });
         }
-    }catch(err){
+    }catch{
         return NextResponse.json({ok: false, message: "Internal server error" });
     }
 }

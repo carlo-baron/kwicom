@@ -4,12 +4,14 @@ import { connectDB } from '@/lib/mongoose';
 import { User } from '@/models/User';
 import jwt from 'jsonwebtoken';
 
-const SECRET = process.env.JWT_SECRET;
+const SECRET = process.env.JWT_SECRET as string;
+
+if(!SECRET) throw new Error("SECRET not set");
 
 export async function GET(){
     await connectDB();
 
-    const cookieStore = cookies();
+    const cookieStore = await cookies();
     const token = cookieStore.get('token')?.value;
 
     if(!token){
@@ -20,7 +22,7 @@ export async function GET(){
     }
 
     try{
-        const decoded = jwt.verify(token, SECRET);
+        jwt.verify(token, SECRET);
 
         const users = await User.find().select("-password");
         return NextResponse.json({
