@@ -1,12 +1,22 @@
 "use client";
 
 import { useState } from 'react';
+import {
+  Button,
+  Typography,
+  Container,
+  TextField,
+  Box,
+  Paper,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+} from "@mui/material";
 
 export default function Home() {
-    const [loggedIn, setLoggedIn] = useState<boolean>(false);
     const [register, setRegister] = useState<boolean>(false);
 
-  function handleSubmit(e: React.FormEvent<HTMLFormElement>){
+  function handleLogin(e: React.FormEvent<HTMLFormElement>){
     e.preventDefault();
     const form = e.currentTarget;
     const formData = new FormData(form);
@@ -24,7 +34,6 @@ export default function Home() {
     .then(res => res.json())
     .then(data => {
         if(data.ok){
-            setLoggedIn(true);
             fetch('/api/users')
             .then(res=>res.json())
             .then(data=>console.log(data));
@@ -57,40 +66,107 @@ export default function Home() {
     .catch(err => console.log(err));
   }
 
+    const handleOpen = () => setRegister(true);
+    const handleClose = () => setRegister(false);
+
   return (
-      <div className="p-4 flex flex-col items-center justify-center w-full h-screen">
-        <h1 className="text-4xl font-bold text-center mb-4">
-            {
-                loggedIn ? "You are In" : "You are Out"
-            }
-        </h1>
-        <Form
-        onSubmit={handleSubmit}
+    <Container
+      maxWidth="sm"
+      sx={{
+        p: 2,
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        width: "100%",
+        height: "100vh",
+      }}
+    >
+      <Paper
+        elevation={3}
+        sx={{
+          p: 3,
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "space-between",
+          width: "100%",
+          minHeight: "80%",
+        }}
+      >
+        <Typography variant="h4" align="center" fontWeight={700}>
+          Welcome to Trellite
+        </Typography>
+
+        <Box
+          component="form"
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            gap: 2,
+          }}
+          onSubmit={handleLogin}
         >
-        <button
-        className="px-4 py-1 bg-blue-500 rounded-lg mt-2"
-        onClick={()=>setRegister(true)}
-        >
-        Register
-        </button>
-        </Form>
-        {
-            register ?
-            (
-                <Backdrop
-                onClick={() => setRegister(false)}
+          <TextField name="username" label="Username" variant="outlined" required />
+          <TextField name="password" label="Password" type="password" variant="outlined" required />
+          <Button type="submit" variant="contained" size="large">
+            Login
+          </Button>
+          <Button 
+          variant="outlined"
+          size="large"
+          onClick={handleOpen}
+          >
+            Register
+          </Button>
+          <Dialog
+          open={register}
+          onClose={handleClose}
+          >
+              <DialogTitle>
+              Register Form
+              </DialogTitle>
+              <DialogContent>
+                <Box
+                  component="form"
+                  sx={{
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: 2,
+                    mt: 1,
+                  }}
+                  onSubmit={handleRegister}
                 >
-                    <Form
-                    onSubmit={handleRegister}
+                    <TextField
+                    name="username"
+                    label="Username"
+                    required
                     />
-                </Backdrop>
-            )
-            :
-            (
-                null
-            )
-        }
-      </div>
+                    <TextField
+                    name="password"
+                    label="Password"
+                    type='password'
+                    required
+                    />
+                    <Button
+                    type="submit"
+                    variant="contained"
+                    size="large"
+                    >
+                    Register
+                    </Button>
+                </Box>
+              </DialogContent>
+          </Dialog>
+        </Box>
+
+        <Typography
+          color="text.secondary"
+          variant="caption"
+          align="center"
+        >
+          Your information is safe with us.
+        </Typography>
+      </Paper>
+    </Container>
   );
 }
 
