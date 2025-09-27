@@ -36,6 +36,7 @@ export default function ThemeRegistry({ children }: { children: React.ReactNode;
         right: '1rem',
         width: 'fit-content',
         height: 'fit-content',
+        zIndex: 10000,
       }}
       onClick={() => setIsLight(!isLight)}
       >
