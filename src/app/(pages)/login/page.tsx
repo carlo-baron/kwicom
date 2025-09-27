@@ -71,7 +71,7 @@ export default function Login() {
 
   return (
     <Container
-      maxWidth="sm"
+      maxWidth="xs"
       sx={{
         p: 2,
         display: "flex",
