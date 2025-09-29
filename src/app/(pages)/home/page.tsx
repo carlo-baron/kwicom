@@ -24,11 +24,75 @@ import SearchIcon from '@mui/icons-material/Search';
 import AddIcon from '@mui/icons-material/Add';
 import { 
     useState,
+    useEffect,
 } from 'react';
 
 export default function Home(){
     const [isLoading, setIsLoading] = useState<boolean>(true);
     const [makePost, setMakePost] = useState<boolean>(false);
+    const [posts, setPosts] = useState([]);
+
+    useEffect(() => {
+        fetch('/api/post')
+              .then(res=>res.json())
+              .then(data=>{
+                  console.log(data.posts);
+                  setPosts(data.posts);
+                  setIsLoading(false);
+              });
+    }, []);
+
+    const mappedPosts = posts.map((post, i) => {
+        return(
+            <Card
+            key={i}
+            >
+                <CardHeader
+                    avatar={
+                        <Skeleton
+                        variant='circular'
+                        width={50}
+                        height={50}
+                        />
+                    }
+                    title={
+                        <Typography
+                        variant='h6'
+                        fontWeight={600}
+                        >
+                            {post.user.username}
+                        </Typography>
+                    }
+                    subheader={
+                        <Typography
+                        >
+                            {post.caption}
+                        </Typography>
+                    }
+                />
+                <Skeleton 
+                variant='rectangular'
+                height={400}
+                />
+                <CardContent>
+                    <Skeleton 
+                    variant='text'
+                    height={10}
+                    style={{
+                        marginBottom: 6
+                    }}
+                    width='100%'
+                    />
+                    <Skeleton 
+                    variant='text'
+                    height={10}
+                    width='70%'
+                    />
+                </CardContent>
+            </Card>
+        ); 
+    });
+    mappedPosts.push(<PostSkeleton key={Date.now()}/>);
 
     function handleSubmit(e: React.FormEvent<HTMLFormElement>){
         e.preventDefault(); 
@@ -74,7 +138,7 @@ export default function Home(){
                         )
                         :
                         (
-                            null
+                            mappedPosts
                         )
                 }
             </Container>
