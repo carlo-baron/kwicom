@@ -13,17 +13,49 @@ import {
     Card,
     CardHeader,
     CardContent,
+    Fab,
+    Dialog,
+    DialogTitle,
+    DialogContent,
+    TextareaAutosize
 } from '@mui/material';
 import AdbIcon from '@mui/icons-material/Adb';
 import SearchIcon from '@mui/icons-material/Search';
+import AddIcon from '@mui/icons-material/Add';
 import { 
     useState,
 } from 'react';
 
 export default function Home(){
     const [isLoading, setIsLoading] = useState<boolean>(true);
+    const [makePost, setMakePost] = useState<boolean>(false);
+
+    function handleSubmit(e: React.FormEvent<HTMLFormElement>){
+        e.preventDefault(); 
+        const form = e.currentTarget;
+        const formData = new FormData(form);
+
+        const formDataObject: {[key: string]: FormDataEntryValue } = {};
+        formData.forEach((value, key) => {
+            formDataObject[key] = value;
+        });
+
+        fetch('/api/post', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json' },
+            body: JSON.stringify(formDataObject)
+        })
+            .then(res=>res.json())
+            .then(data => {
+                if(data.ok){
+                    setMakePost(false);
+                }
+            });
+    }
+
     return(
         <Container
+        disableGutters
         >
             <Navbar />
             <Toolbar />
@@ -46,6 +78,54 @@ export default function Home(){
                         )
                 }
             </Container>
+            <Fab
+            color='secondary'
+            style={{
+                position: 'fixed',
+                right: 16,
+                bottom: 16,
+            }}
+            onClick={() => setMakePost(true)}
+            >
+                <AddIcon/>
+            </Fab>
+            <Dialog
+            open={makePost}
+            onClose={()=> setMakePost(false)}
+            fullWidth
+            maxWidth='sm'
+            >
+                <DialogTitle>
+                    Make Post
+                </DialogTitle>
+                <DialogContent>
+                    <Box
+                      component="form"
+                      sx={{
+                        display: "flex",
+                        flexDirection: "column",
+                        gap: 2,
+                        mt: 1,
+                      }}
+                      onSubmit={handleSubmit}
+                    >
+                        <TextareaAutosize
+                        name="caption"
+                        placeholder="Caption"
+                        minRows={3}
+                        maxRows={5}
+                        required
+                        />
+                        <Button
+                        type="submit"
+                        variant="contained"
+                        size="large"
+                        >
+                        Post
+                        </Button>
+                    </Box>
+                </DialogContent>
+            </Dialog>
         </Container>
     );
 }
