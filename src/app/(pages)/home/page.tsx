@@ -32,7 +32,7 @@ export default function Home(){
     const [isLoading, setIsLoading] = useState<boolean>(true);
     const [makePost, setMakePost] = useState<boolean>(false);
     const [posts, setPosts] = useState<PostType[]>([]);
-    const [page, setPage] = useState<number>(1);
+    const [_page, setPage] = useState<number>(1);
 
     useEffect(() => {
         fetch('/api/post')

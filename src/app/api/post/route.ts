@@ -47,9 +47,8 @@ export async function POST(req: Request){
         }
 
         try{
-            const decodedToken = jwt.verify(token, SECRET);
+            const decodedToken = jwt.verify(token, SECRET) as jwt.JwtPayload;
             const username = decodedToken.username;
-            console.log("decoded");
 
             const { caption } = await req.json();
 
