@@ -13,7 +13,7 @@ export async function GET(req: Request){
 
         const { searchParams } = new URL(req.url);
         const page = parseInt(searchParams.get('page') || '1', 10);
-        const limit = 2;
+        const limit = 5;
 
         const posts = await Post.find({})
                             .sort({'createdAt': 1})

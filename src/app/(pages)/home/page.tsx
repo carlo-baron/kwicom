@@ -17,7 +17,8 @@ import {
     Dialog,
     DialogTitle,
     DialogContent,
-    TextareaAutosize
+    TextareaAutosize,
+    Collapse,
 } from '@mui/material';
 import AdbIcon from '@mui/icons-material/Adb';
 import SearchIcon from '@mui/icons-material/Search';
@@ -72,11 +73,23 @@ export default function Home(){
       }, []);
 
     const mappedPosts = posts.map((post, i) => {
+        const createdAt = new Date(post.createdAt);
+        const diffMs = Date.now() - createdAt.getTime();
+        const diffHours = diffMs / (1000 * 60 * 60);
+        let date: string;
+        if(diffHours > 24){
+            date = new Date(post.createdAt).getDate() + 'days ago'; 
+        }else{
+            date = new Date(post.createdAt).getHours() + 'h ago'; 
+        }
+
         return(
             <Card
             key={i}
+            className='p-4'
             >
                 <CardHeader
+                    sx={{padding: 0}}
                     avatar={
                         <Skeleton
                         variant='circular'
@@ -85,38 +98,53 @@ export default function Home(){
                         />
                     }
                     title={
-                        <Typography
-                        variant='h6'
-                        fontWeight={600}
-                        >
-                            {post.user.username}
-                        </Typography>
-                    }
-                    subheader={
-                        <Typography
-                        >
-                            {post.caption}
-                        </Typography>
+                        <Box>
+                            <Typography
+                            variant='h6'
+                            fontWeight={600}
+                            >
+                                {post.user.username}
+                            </Typography>
+                            <Typography
+                            sx={{
+                                fontSize: '12px',
+                            }}
+                            fontWeight={400}
+                            color='textSecondary'
+                            >
+                                {date}
+                            </Typography>
+                        </Box>
                     }
                 />
-                {
-                    post.media ? 
-                        (
-                            <Skeleton 
-                            variant='rectangular'
-                            height={400}
-                            />
-                        )
-                    :
-                        (
-                            null
-                        )
-                }
+                <CardContent
+                sx={{
+                    padding: 1,
+                }}
+                >
+                    <Typography
+                    >
+                        {post.caption}
+                    </Typography>
+                    {
+                        post.media ? 
+                            (
+                                <Skeleton 
+                                variant='rectangular'
+                                height={400}
+                                />
+                            )
+                        :
+                            (
+                                null
+                            )
+                    }
+                </CardContent>
                 <CardContent
                 sx={{
                     borderTop: 1,
                     borderColor: 'text.secondary',
-                    paddingBottom: '16px !important',
+                    paddingBottom: '0px !important',
                 }}
                 >
                     <Container
