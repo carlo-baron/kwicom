@@ -8,6 +8,7 @@ const PostSchema = new Schema({
         required: true 
     },
     caption: { type: String, required: true, minLength: 3, maxLength: 1000 },
+    media: { type: String },
     createdAt: {type: Date, default: Date.now}
 });
 
@@ -16,5 +17,6 @@ export const Post = models.Post || mongoose.model('Post', PostSchema);
 export type PostType = {
     user: UserType;
     caption: string;
+    media: string;
     createdAt: Date;
 }

@@ -99,24 +99,78 @@ export default function Home(){
                         </Typography>
                     }
                 />
-                <Skeleton 
-                variant='rectangular'
-                height={400}
-                />
-                <CardContent>
-                    <Skeleton 
-                    variant='text'
-                    height={10}
-                    style={{
-                        marginBottom: 6
-                    }}
-                    width='100%'
-                    />
-                    <Skeleton 
-                    variant='text'
-                    height={10}
-                    width='70%'
-                    />
+                {
+                    post.media ? 
+                        (
+                            <Skeleton 
+                            variant='rectangular'
+                            height={400}
+                            />
+                        )
+                    :
+                        (
+                            null
+                        )
+                }
+                <CardContent
+                sx={{
+                    borderTop: 1,
+                    borderColor: 'text.secondary',
+                    paddingBottom: '16px !important',
+                }}
+                >
+                    <Container
+                    className='flex justify-between'
+                    disableGutters
+                    >
+                        <Button
+                        className='grow gap-2'
+                        sx={{
+                            textTransform: 'none',
+                        }}
+                        >
+                            <FavoriteIcon 
+                            sx={{
+                                color: 'red',
+                            }}
+                            />
+                            <Typography
+                            color='textSecondary'
+                            >
+                                Like
+                            </Typography>
+                        </Button>
+                        <Button
+                        className='grow gap-2'
+                        sx={{
+                            textTransform: 'none',
+                        }}
+                        >
+                            <CommentIcon 
+                            color='action'
+                            />
+                            <Typography
+                            color='textSecondary'
+                            >
+                                Comment
+                            </Typography>
+                        </Button>
+                        <Button
+                        className='grow gap-2'
+                        sx={{
+                            textTransform: 'none',
+                        }}
+                        >
+                            <LinkIcon
+                            color='action'
+                            />
+                            <Typography
+                            color='textSecondary'
+                            >
+                                Link
+                            </Typography>
+                        </Button>
+                    </Container>
                 </CardContent>
             </Card>
         ); 
