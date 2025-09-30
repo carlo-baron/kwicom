@@ -11,16 +11,31 @@ import {
 } from '@mui/material';
 import { 
     useState,
+    useEffect
 } from 'react';
 
 
 export default function ThemeRegistry({ children }: { children: React.ReactNode; }) {
     const [isLight, setIsLight] = useState<boolean>(false);
+    const [mounted, setMounted] = useState<boolean>(false);
     const theme = createTheme({
       palette: {
         mode: isLight ? "light" : "dark",
       },
     });
+
+    useState(()=>{
+        setMounted(true);
+    },[]);
+
+    if(!mounted){
+        return(
+            <ThemeProvider theme={theme}>
+              <CssBaseline />
+              {children}
+            </ThemeProvider>
+        );
+    }
 
   return (
     <ThemeProvider theme={theme}>

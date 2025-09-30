@@ -22,6 +22,10 @@ import {
 import AdbIcon from '@mui/icons-material/Adb';
 import SearchIcon from '@mui/icons-material/Search';
 import AddIcon from '@mui/icons-material/Add';
+import FavoriteIcon from '@mui/icons-material/Favorite';
+import CommentIcon from '@mui/icons-material/Comment';
+import LinkIcon from '@mui/icons-material/Link';
+
 import { 
     useState,
     useEffect,
