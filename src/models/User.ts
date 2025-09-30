@@ -6,3 +6,8 @@ const UserSchema = new Schema({
 });
 
 export const User = models.User|| mongoose.model('User', UserSchema);
+
+export type UserType = {
+    username: string;
+    password: string;
+};

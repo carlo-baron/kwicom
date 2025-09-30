@@ -1,4 +1,5 @@
 import mongoose, { Schema, models } from "mongoose";
+import { UserType } from './User';
 
 const PostSchema = new Schema({
     user: { 
@@ -11,3 +12,9 @@ const PostSchema = new Schema({
 });
 
 export const Post = models.Post || mongoose.model('Post', PostSchema);
+
+export type PostType = {
+    user: UserType;
+    caption: string;
+    createdAt: Date;
+}

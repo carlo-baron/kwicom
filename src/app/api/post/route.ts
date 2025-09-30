@@ -7,13 +7,18 @@ import jwt from 'jsonwebtoken';
 
 const SECRET = process.env.JWT_SECRET as string;
 
-export async function GET(){
+export async function GET(req: Request){
     try{
         await connectDB();
 
+        const { searchParams } = new URL(req.url);
+        const page = parseInt(searchParams.get('page') || '1', 10);
+        const limit = 2;
+
         const posts = await Post.find({})
                             .sort({'createdAt': 1})
-                            .limit(2)
+                            .skip((page - 1) * limit)
+                            .limit(limit)
                             .populate('user', 'username');
         return NextResponse.json({
             ok: true,

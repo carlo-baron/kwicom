@@ -26,21 +26,46 @@ import {
     useState,
     useEffect,
 } from 'react';
+import { PostType } from '@/models/Post';
 
 export default function Home(){
     const [isLoading, setIsLoading] = useState<boolean>(true);
     const [makePost, setMakePost] = useState<boolean>(false);
-    const [posts, setPosts] = useState([]);
+    const [posts, setPosts] = useState<PostType[]>([]);
+    const [page, setPage] = useState<number>(1);
 
     useEffect(() => {
         fetch('/api/post')
               .then(res=>res.json())
               .then(data=>{
-                  console.log(data.posts);
-                  setPosts(data.posts);
-                  setIsLoading(false);
+                  if(data.ok){
+                      setPosts(data.posts);
+                      setIsLoading(false);
+                  }
               });
     }, []);
+
+    useEffect(() => {
+        const onscroll = () => {
+          const scrolledTo = window.scrollY + window.innerHeight;
+          const isReachBottom = document.body.scrollHeight === scrolledTo;
+          if (isReachBottom){
+            setPage(prev=>{
+                const nextPage = prev + 1;
+                fetch(`/api/post?page=${nextPage}`)
+                .then(res=>res.json())
+                .then(data=>{
+                    setPosts(prev => [...prev, ...data.posts]);
+                });
+                return nextPage;
+            });
+          }
+        };
+        window.addEventListener("scroll", onscroll);
+        return () => {
+          window.removeEventListener("scroll", onscroll);
+        };
+      }, []);
 
     const mappedPosts = posts.map((post, i) => {
         return(
@@ -125,7 +150,7 @@ export default function Home(){
             <Toolbar />
             <Container
             maxWidth='sm'
-            className='gap-4 flex flex-col pt-4 pb-4  h-fit'
+            className='p-4 gap-4 flex flex-col h-fit'
             disableGutters
             >
                 {
