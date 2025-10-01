@@ -18,7 +18,8 @@ import {
     DialogTitle,
     DialogContent,
     TextareaAutosize,
-    Collapse,
+    CardActions,
+    CardActionArea,
 } from '@mui/material';
 import AdbIcon from '@mui/icons-material/Adb';
 import SearchIcon from '@mui/icons-material/Search';
@@ -78,7 +79,7 @@ export default function Home(){
         const diffHours = diffMs / (1000 * 60 * 60);
         let date: string;
         if(diffHours > 24){
-            date = new Date(post.createdAt).getDate() + 'days ago'; 
+            date = new Date(post.createdAt).getDay() + ' day(s) ago'; 
         }else{
             date = new Date(post.createdAt).getHours() + 'h ago'; 
         }
@@ -122,10 +123,10 @@ export default function Home(){
                     padding: 1,
                 }}
                 >
-                    <Typography
+                    <ReadMore
                     >
                         {post.caption}
-                    </Typography>
+                    </ReadMore>
                     {
                         post.media ? 
                             (
@@ -147,58 +148,57 @@ export default function Home(){
                     paddingBottom: '0px !important',
                 }}
                 >
-                    <Container
-                    className='flex justify-between'
-                    disableGutters
+                <CardActions
+                sx={{padding: 0}}
+                >
+                    <Button
+                    className='grow gap-2'
+                    sx={{
+                        textTransform: 'none',
+                    }}
                     >
-                        <Button
-                        className='grow gap-2'
+                        <FavoriteIcon 
                         sx={{
-                            textTransform: 'none',
+                            color: 'red',
                         }}
+                        />
+                        <Typography
+                        color='textSecondary'
                         >
-                            <FavoriteIcon 
-                            sx={{
-                                color: 'red',
-                            }}
-                            />
-                            <Typography
-                            color='textSecondary'
-                            >
-                                Like
-                            </Typography>
-                        </Button>
-                        <Button
-                        className='grow gap-2'
-                        sx={{
-                            textTransform: 'none',
-                        }}
+                            Like
+                        </Typography>
+                    </Button>
+                    <Button
+                    className='grow gap-2'
+                    sx={{
+                        textTransform: 'none',
+                    }}
+                    >
+                        <CommentIcon 
+                        color='action'
+                        />
+                        <Typography
+                        color='textSecondary'
                         >
-                            <CommentIcon 
-                            color='action'
-                            />
-                            <Typography
-                            color='textSecondary'
-                            >
-                                Comment
-                            </Typography>
-                        </Button>
-                        <Button
-                        className='grow gap-2'
-                        sx={{
-                            textTransform: 'none',
-                        }}
+                            Comment
+                        </Typography>
+                    </Button>
+                    <Button
+                    className='grow gap-2'
+                    sx={{
+                        textTransform: 'none',
+                    }}
+                    >
+                        <LinkIcon
+                        color='action'
+                        />
+                        <Typography
+                        color='textSecondary'
                         >
-                            <LinkIcon
-                            color='action'
-                            />
-                            <Typography
-                            color='textSecondary'
-                            >
-                                Link
-                            </Typography>
-                        </Button>
-                    </Container>
+                            Link
+                        </Typography>
+                    </Button>
+                </CardActions>
                 </CardContent>
             </Card>
         ); 
@@ -301,6 +301,32 @@ export default function Home(){
                     </Box>
                 </DialogContent>
             </Dialog>
+        </Container>
+    );
+}
+
+function ReadMore({children} : {children: React.ReactNode;}){
+    const [expanded, setExpanded] = useState<boolean>(false);
+    return(
+        <Container
+        >
+            <Typography
+            onClick={() => setExpanded(!expanded)}
+            sx={expanded ? 
+                {
+                } 
+                : 
+                {
+                    display: '-webkit-box',
+                    WebkitLineClamp: 3,
+                    WebkitBoxOrient: 'vertical',
+                    textOverflow: 'ellipsis',
+                    overflow: 'hidden',
+                }
+            }
+            >
+                {children}
+            </Typography>
         </Container>
     );
 }

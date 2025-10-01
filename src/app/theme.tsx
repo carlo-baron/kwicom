@@ -2,6 +2,8 @@
 
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
+import createCache from '@emotion/cache';
+import { CacheProvider } from '@emotion/react';
 import {
     LightMode,
     DarkMode,
@@ -14,6 +16,7 @@ import {
     useEffect
 } from 'react';
 
+const cache = createCache({ key: 'css', prepend: true });
 
 export default function ThemeRegistry({ children }: { children: React.ReactNode; }) {
     const [isLight, setIsLight] = useState<boolean>(false);
@@ -38,31 +41,33 @@ export default function ThemeRegistry({ children }: { children: React.ReactNode;
     }
 
   return (
-    <ThemeProvider theme={theme}>
-      <CssBaseline />
-      <Button
-      variant={ isLight ? "contained" : "outlined" }
-      size="small"
-      sx={{
-        p: 1,
-        position: 'fixed',
-        top: '1rem',
-        right: '1rem',
-        width: 'fit-content',
-        height: 'fit-content',
-        zIndex: 10000,
-      }}
-      onClick={() => setIsLight(!isLight)}
-      >
-        {
-            isLight ?
-                <LightMode />
-            :
-                <DarkMode />
-        }
-      </Button>
-      {children}
-    </ThemeProvider>
+    <CacheProvider value={cache}> 
+        <ThemeProvider theme={theme}>
+          <CssBaseline />
+          <Button
+          variant={ isLight ? "contained" : "outlined" }
+          size="small"
+          sx={{
+            p: 1,
+            position: 'fixed',
+            top: '1rem',
+            right: '1rem',
+            width: 'fit-content',
+            height: 'fit-content',
+            zIndex: 10000,
+          }}
+          onClick={() => setIsLight(!isLight)}
+          >
+            {
+                isLight ?
+                    <LightMode />
+                :
+                    <DarkMode />
+            }
+          </Button>
+          {children}
+        </ThemeProvider>
+    </CacheProvider>
   );
 }
 
