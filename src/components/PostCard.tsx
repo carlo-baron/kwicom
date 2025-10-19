@@ -25,7 +25,7 @@ interface PostCardProps{
 }
 
 export default function PostCard({post, onLike}:PostCardProps) {
-  const [liked, setLiked] = useState<boolean>(post.liked);
+  const [localPost, setLocalPost] = useState<PostType>(post);
 
   const createdAt = new Date(post.createdAt);
   const diffMs = Date.now() - createdAt.getTime();
@@ -38,7 +38,12 @@ export default function PostCard({post, onLike}:PostCardProps) {
   }
 
   function likeClick(){
-    setLiked(prev => !prev);
+    const likeCount = localPost.liked ? localPost.likeCount - 1 : localPost.likeCount + 1;
+    setLocalPost(prev => ({
+      ...prev,
+      liked: !prev.liked,
+      likeCount,
+    }));
     onLike(post._id);
   }
 
@@ -89,7 +94,7 @@ export default function PostCard({post, onLike}:PostCardProps) {
             onClick={likeClick}
           >
             {
-              liked ?
+              localPost.liked ?
                 (
                   <FavoriteIcon 
                   sx={{color: 'red'}}
@@ -100,7 +105,7 @@ export default function PostCard({post, onLike}:PostCardProps) {
                   <FavoriteBorderOutlinedIcon color="action" />
                 )
             }
-            <Typography color="textSecondary">Like</Typography>
+            <Typography color="textSecondary">{localPost.likeCount}</Typography>
           </Button>
           <Button
             className="grow gap-2"
