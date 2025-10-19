@@ -15,14 +15,20 @@ export async function GET(req: Request){
         const page = parseInt(searchParams.get('page') || '1', 10);
         const limit = 5;
 
+        const totalPosts = await Post.countDocuments({});
         const posts = await Post.find({})
-                            .sort({'createdAt': 1})
-                            .skip((page - 1) * limit)
-                            .limit(limit)
-                            .populate('user', 'username');
+            .sort({'createdAt': -1})
+            .skip((page - 1) * limit)
+            .limit(limit)
+            .populate('user', 'username');
+
+        const hasNext = page * limit < totalPosts;
+
         return NextResponse.json({
             ok: true,
-            posts
+            posts,
+            page,
+            hasNext
         });
     }catch{
         return NextResponse.json({
@@ -56,10 +62,15 @@ export async function POST(req: Request){
                 const user = await User.findOne({
                     username
                 });
-                const post = await Post.insertOne({
+                if(!user){
+                    return NextResponse.json({
+                        ok: false,
+                        message: "User not found",
+                    });
+                }
+                const post = await Post.create({
                     user: user, 
                     caption,
-                    new: true
                 });
                 const message = username + " create a new post";
                 if(post){

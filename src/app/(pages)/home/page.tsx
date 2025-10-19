@@ -19,6 +19,7 @@ import {
     DialogContent,
     TextareaAutosize,
     CardActions,
+    Divider,
 } from '@mui/material';
 import AdbIcon from '@mui/icons-material/Adb';
 import SearchIcon from '@mui/icons-material/Search';
@@ -39,6 +40,7 @@ export default function Home(){
     const [makePost, setMakePost] = useState<boolean>(false);
     const [posts, setPosts] = useState<PostType[]>([]);
     const [_page, setPage] = useState<number>(1);
+    const [hasNext, setHasNext] = useState<boolean>(false);
 
     useEffect(() => {
         fetch('/api/post')
@@ -47,6 +49,7 @@ export default function Home(){
                   if(data.ok){
                       setPosts(data.posts);
                       setIsLoading(false);
+                      setHasNext(data.hasNext);
                   }
               });
     }, []);
@@ -62,6 +65,7 @@ export default function Home(){
                 .then(res=>res.json())
                 .then(data=>{
                     setPosts(prev => [...prev, ...data.posts]);
+                    setHasNext(data.hasNext);
                 });
                 return nextPage;
             });
@@ -141,65 +145,67 @@ export default function Home(){
                             )
                     }
                 </CardContent>
+                <Divider 
+                orientation='horizontal'
+                />
                 <CardContent
                 sx={{
-                    borderTop: 1,
-                    borderColor: 'text.secondary',
                     paddingBottom: '0px !important',
                 }}
                 >
-                <CardActions
-                sx={{padding: 0}}
-                >
-                    <Button
-                    className='grow gap-2'
-                    sx={{
-                        textTransform: 'none',
-                    }}
-                    >
-                        <FavoriteBorderOutlinedIcon />
-                        <Typography
-                        color='textSecondary'
-                        >
-                            Like
-                        </Typography>
-                    </Button>
-                    <Button
-                    className='grow gap-2'
-                    sx={{
-                        textTransform: 'none',
-                    }}
-                    >
-                        <CommentIcon 
-                        color='action'
-                        />
-                        <Typography
-                        color='textSecondary'
-                        >
-                            Comment
-                        </Typography>
-                    </Button>
-                    <Button
-                    className='grow gap-2'
-                    sx={{
-                        textTransform: 'none',
-                    }}
-                    >
-                        <LinkIcon
-                        color='action'
-                        />
-                        <Typography
-                        color='textSecondary'
-                        >
-                            Link
-                        </Typography>
-                    </Button>
-                </CardActions>
+                  <CardActions
+                  sx={{padding: 0}}
+                  >
+                      <Button
+                      className='grow gap-2'
+                      sx={{
+                          textTransform: 'none',
+                      }}
+                      >
+                          <FavoriteBorderOutlinedIcon 
+                          color='action'
+                          />
+                          <Typography
+                          color='textSecondary'
+                          >
+                              Like
+                          </Typography>
+                      </Button>
+                      <Button
+                      className='grow gap-2'
+                      sx={{
+                          textTransform: 'none',
+                      }}
+                      >
+                          <CommentIcon 
+                          color='action'
+                          />
+                          <Typography
+                          color='textSecondary'
+                          >
+                              Comment
+                          </Typography>
+                      </Button>
+                      <Button
+                      className='grow gap-2'
+                      sx={{
+                          textTransform: 'none',
+                      }}
+                      >
+                          <LinkIcon
+                          color='action'
+                          />
+                          <Typography
+                          color='textSecondary'
+                          >
+                              Link
+                          </Typography>
+                      </Button>
+                  </CardActions>
                 </CardContent>
             </Card>
         ); 
     });
-    mappedPosts.push(<PostSkeleton key={Date.now()}/>);
 
     function handleSubmit(e: React.FormEvent<HTMLFormElement>){
         e.preventDefault(); 
@@ -247,6 +253,14 @@ export default function Home(){
                         (
                             mappedPosts
                         )
+                }
+                {
+                  hasNext ?
+                    (
+                      <PostSkeleton key={Date.now()}/>
+                    )
+                  :
+                    null
                 }
             </Container>
             <Fab
