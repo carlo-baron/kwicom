@@ -2,32 +2,19 @@
 
 import {
     Container,
-    Typography,
     Button,
     Box,
-    AppBar,
-    Avatar,
-    IconButton,
     Toolbar,
-    Skeleton,
-    Card,
-    CardHeader,
-    CardContent,
     Fab,
     Dialog,
     DialogTitle,
     DialogContent,
     TextareaAutosize,
-    CardActions,
-    Divider,
 } from '@mui/material';
-import AdbIcon from '@mui/icons-material/Adb';
-import SearchIcon from '@mui/icons-material/Search';
 import AddIcon from '@mui/icons-material/Add';
-import FavoriteIcon from '@mui/icons-material/Favorite';
-import FavoriteBorderOutlinedIcon from '@mui/icons-material/FavoriteBorderOutlined';
-import CommentIcon from '@mui/icons-material/Comment';
-import LinkIcon from '@mui/icons-material/Link';
+import PostSkeleton from '@/components/PostSkeleton';
+import Navbar from '@/components/Navbar';
+import PostCard from '@/components/PostCard';
 
 import { 
     useState,
@@ -78,132 +65,11 @@ export default function Home(){
       }, []);
 
     const mappedPosts = posts.map((post, i) => {
-        const createdAt = new Date(post.createdAt);
-        const diffMs = Date.now() - createdAt.getTime();
-        const diffHours = diffMs / (1000 * 60 * 60);
-        let date: string;
-        if(diffHours > 24){
-            date = new Date(post.createdAt).getDay() + ' day(s) ago'; 
-        }else{
-            date = new Date(post.createdAt).getHours() + 'h ago'; 
-        }
-
         return(
-            <Card
-            key={i}
-            className='p-4'
-            >
-                <CardHeader
-                    sx={{padding: 0}}
-                    avatar={
-                        <Skeleton
-                        variant='circular'
-                        width={50}
-                        height={50}
-                        />
-                    }
-                    title={
-                        <Box>
-                            <Typography
-                            variant='h6'
-                            fontWeight={600}
-                            >
-                                {post.user.username}
-                            </Typography>
-                            <Typography
-                            sx={{
-                                fontSize: '12px',
-                            }}
-                            fontWeight={400}
-                            color='textSecondary'
-                            >
-                                {date}
-                            </Typography>
-                        </Box>
-                    }
-                />
-                <CardContent
-                sx={{
-                    padding: 1,
-                }}
-                >
-                    <ReadMore
-                    >
-                        {post.caption}
-                    </ReadMore>
-                    {
-                        post.media ? 
-                            (
-                                <Skeleton 
-                                variant='rectangular'
-                                height={400}
-                                />
-                            )
-                        :
-                            (
-                                null
-                            )
-                    }
-                </CardContent>
-                <Divider 
-                orientation='horizontal'
-                />
-                <CardContent
-                sx={{
-                    paddingBottom: '0px !important',
-                }}
-                >
-                  <CardActions
-                  sx={{padding: 0}}
-                  >
-                      <Button
-                      className='grow gap-2'
-                      sx={{
-                          textTransform: 'none',
-                      }}
-                      >
-                          <FavoriteBorderOutlinedIcon 
-                          color='action'
-                          />
-                          <Typography
-                          color='textSecondary'
-                          >
-                              Like
-                          </Typography>
-                      </Button>
-                      <Button
-                      className='grow gap-2'
-                      sx={{
-                          textTransform: 'none',
-                      }}
-                      >
-                          <CommentIcon 
-                          color='action'
-                          />
-                          <Typography
-                          color='textSecondary'
-                          >
-                              Comment
-                          </Typography>
-                      </Button>
-                      <Button
-                      className='grow gap-2'
-                      sx={{
-                          textTransform: 'none',
-                      }}
-                      >
-                          <LinkIcon
-                          color='action'
-                          />
-                          <Typography
-                          color='textSecondary'
-                          >
-                              Link
-                          </Typography>
-                      </Button>
-                  </CardActions>
-                </CardContent>
-            </Card>
+          <PostCard 
+          key={i}
+          post={post}
+          />
         ); 
     });
 
@@ -315,136 +181,3 @@ export default function Home(){
     );
 }
 
-function ReadMore({children} : {children: React.ReactNode;}){
-    const [expanded, setExpanded] = useState<boolean>(false);
-    return(
-        <Container
-        >
-            <Typography
-            onClick={() => setExpanded(!expanded)}
-            sx={expanded ? 
-                {
-                } 
-                : 
-                {
-                    display: '-webkit-box',
-                    WebkitLineClamp: 3,
-                    WebkitBoxOrient: 'vertical',
-                    textOverflow: 'ellipsis',
-                    overflow: 'hidden',
-                }
-            }
-            >
-                {children}
-            </Typography>
-        </Container>
-    );
-}
-
-function PostSkeleton(){
-    return(
-        <Card
-        >
-            <CardHeader
-                avatar={
-                    <Skeleton
-                    variant='circular'
-                    width={50}
-                    height={50}
-                    />
-                }
-                title={
-                    <Skeleton 
-                    variant='text'
-                    height={10}
-                    width='80%'
-                    style={{ marginBottom: 6 }}
-                    />
-                }
-                subheader={
-                    <Skeleton 
-                    variant='text'
-                    height={10}
-                    width='40%'
-                    />
-                }
-            />
-            <Skeleton 
-            variant='rectangular'
-            height={400}
-            />
-            <CardContent>
-                <Skeleton 
-                variant='text'
-                height={10}
-                style={{
-                    marginBottom: 6
-                }}
-                width='100%'
-                />
-                <Skeleton 
-                variant='text'
-                height={10}
-                width='70%'
-                />
-            </CardContent>
-        </Card>
-    );
-}
-
-function Navbar(){
-    return(
-        <AppBar>
-            <Container>
-                <Toolbar
-                disableGutters
-                className='flex justify-between'
-                >
-                    <Box
-                    >
-                        <IconButton
-                        size='large'
-                        >
-                            <AdbIcon />
-                        </IconButton>
-                        <IconButton
-                        size='large'
-                        >
-                            <SearchIcon />
-                        </IconButton>
-                    </Box>
-                    <Box
-                    sx={{
-                        display: {
-                            xs: 'none',
-                            sm: 'flex'
-                        }
-                    }}
-                    >
-                        <Typography
-                        variant='h4'
-                        noWrap
-                        component='a'
-                        href='/home'
-                        sx={{
-                            fontWeight: 600,
-                            letterSpacing: '.3rem', 
-                            fontFamily: 'monospace',
-                        }}
-                        >
-                            TRELLITE
-                        </Typography>
-                    </Box>
-                    <Box>
-                        <IconButton
-                        size='large'
-                        sx={{p: 0}}
-                        >
-                            <Avatar/>
-                        </IconButton>
-                    </Box>
-                </Toolbar>
-            </Container>
-        </AppBar>
-    );
-}
