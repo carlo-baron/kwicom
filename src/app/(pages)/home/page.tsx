@@ -69,6 +69,7 @@ export default function Home(){
           <PostCard 
           key={i}
           post={post}
+          onLike={handleLike}
           />
         ); 
     });
@@ -94,6 +95,14 @@ export default function Home(){
                     setMakePost(false);
                 }
             });
+    }
+
+    function handleLike(postId: string){
+      fetch('api/like', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({postId})
+      });
     }
 
     return(

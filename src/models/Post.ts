@@ -9,14 +9,18 @@ const PostSchema = new Schema({
     },
     caption: { type: String, required: true, minLength: 3, maxLength: 1000 },
     media: { type: String },
-    createdAt: {type: Date, default: Date.now}
-});
+}, {timestamps: true});
 
 export const Post = models.Post || mongoose.model('Post', PostSchema);
 
 export type PostType = {
+    _id: string;
     user: UserType;
     caption: string;
-    media: string;
+    media?: string;
+    likedBy?: any[];
+    likeCount: number;
+    liked: boolean;
     createdAt: Date;
+    updatedAt: Date;
 }

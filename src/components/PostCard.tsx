@@ -1,3 +1,5 @@
+"use client";
+
 import {
     Typography,
     Button,
@@ -9,13 +11,22 @@ import {
     CardActions,
     Divider,
 } from '@mui/material';
+import FavoriteIcon from '@mui/icons-material/Favorite';
 import FavoriteBorderOutlinedIcon from '@mui/icons-material/FavoriteBorderOutlined';
 import CommentIcon from '@mui/icons-material/Comment';
 import LinkIcon from '@mui/icons-material/Link';
 import { PostType } from '@/models/Post';
 import ReadMore from './ReadMore';
+import { useState } from 'react';
 
-export default function PostCard({post}:{post: PostType}) {
+interface PostCardProps{
+  post: PostType;
+  onLike: (id: string) => void;
+}
+
+export default function PostCard({post, onLike}:PostCardProps) {
+  const [liked, setLiked] = useState<boolean>(post.liked);
+
   const createdAt = new Date(post.createdAt);
   const diffMs = Date.now() - createdAt.getTime();
   const diffHours = diffMs / (1000 * 60 * 60);
@@ -26,7 +37,9 @@ export default function PostCard({post}:{post: PostType}) {
       date = new Date(post.createdAt).getHours() + 'h ago'; 
   }
 
-  function handleLike(){
+  function likeClick(){
+    setLiked(prev => !prev);
+    onLike(post._id);
   }
 
   return (
@@ -73,9 +86,20 @@ export default function PostCard({post}:{post: PostType}) {
             sx={{
               textTransform: "none",
             }}
-            onClick={handleLike}
+            onClick={likeClick}
           >
-            <FavoriteBorderOutlinedIcon color="action" />
+            {
+              liked ?
+                (
+                  <FavoriteIcon 
+                  sx={{color: 'red'}}
+                  />
+                )
+              :
+                (
+                  <FavoriteBorderOutlinedIcon color="action" />
+                )
+            }
             <Typography color="textSecondary">Like</Typography>
           </Button>
           <Button

@@ -21,6 +21,7 @@ export const config = {
     matcher: [
         '/home',
         '/api/post/:path*',
-        '/api/users',
+        '/api/users/:path*',
+        '/api/like/:path*',
     ],
 };
