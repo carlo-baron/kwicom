@@ -16,11 +16,11 @@ import {
     useEffect
 } from 'react';
 
-const cache = createCache({ key: 'css', prepend: true });
 
 export default function ThemeRegistry({ children }: { children: React.ReactNode; }) {
     const [isLight, setIsLight] = useState<boolean>(false);
     const [mounted, setMounted] = useState<boolean>(false);
+    const cache = createCache({ key: 'css', prepend: true });
     const theme = createTheme({
       palette: {
         mode: isLight ? "light" : "dark",

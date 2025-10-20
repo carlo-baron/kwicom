@@ -17,16 +17,14 @@ import CommentIcon from '@mui/icons-material/Comment';
 import LinkIcon from '@mui/icons-material/Link';
 import { PostType } from '@/models/Post';
 import ReadMore from './ReadMore';
-import { useState } from 'react';
 
 interface PostCardProps{
   post: PostType;
   onLike: (id: string) => void;
+  onOpen: (postId: string) => void;
 }
 
-export default function PostCard({post, onLike}:PostCardProps) {
-  const [localPost, setLocalPost] = useState<PostType>(post);
-
+export default function PostCard({post, onLike, onOpen}:PostCardProps) {
   const createdAt = new Date(post.createdAt);
   const diffMs = Date.now() - createdAt.getTime();
   const diffHours = diffMs / (1000 * 60 * 60);
@@ -37,19 +35,10 @@ export default function PostCard({post, onLike}:PostCardProps) {
       date = new Date(post.createdAt).getHours() + 'h ago'; 
   }
 
-  function likeClick(){
-    const likeCount = localPost.liked ? localPost.likeCount - 1 : localPost.likeCount + 1;
-    setLocalPost(prev => ({
-      ...prev,
-      liked: !prev.liked,
-      likeCount,
-    }));
-    onLike(post._id);
-  }
-
   return (
     <Card 
     className="p-4"
+    raised 
     >
       <CardHeader
         sx={{ padding: 0 }}
@@ -91,10 +80,10 @@ export default function PostCard({post, onLike}:PostCardProps) {
             sx={{
               textTransform: "none",
             }}
-            onClick={likeClick}
+            onClick={()=>onLike(post._id)}
           >
             {
-              localPost.liked ?
+              post.liked ?
                 (
                   <FavoriteIcon 
                   sx={{color: 'red'}}
@@ -105,13 +94,14 @@ export default function PostCard({post, onLike}:PostCardProps) {
                   <FavoriteBorderOutlinedIcon color="action" />
                 )
             }
-            <Typography color="textSecondary">{localPost.likeCount}</Typography>
+            <Typography color="textSecondary">{post.likeCount}</Typography>
           </Button>
           <Button
             className="grow gap-2"
             sx={{
               textTransform: "none",
             }}
+            onClick={() => onOpen(post._id)}
           >
             <CommentIcon color="action" />
             <Typography color="textSecondary">Comment</Typography>

@@ -20,10 +20,13 @@ export async function POST(req: Request){
         if(user){
             const isValid = await compare(password, user.password);
             if(isValid){
+                const hours = 24
+                const expiration = 60 * 60 * hours;
+
                 const token = jwt.sign(
                     { id: user._id, username: user.username },
                     SECRET,
-                    { expiresIn: "24h" }
+                    { expiresIn: expiration }
                 );
 
                 const res = NextResponse.json({
@@ -35,7 +38,7 @@ export async function POST(req: Request){
                     httpOnly: true,
                     secure: process.env.NODE_ENV === "production",
                     sameSite: 'strict',
-                    maxAge: 60 * 60,
+                    maxAge: expiration,
                     path: '/',
                 });
 
